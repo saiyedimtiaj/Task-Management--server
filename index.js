@@ -25,6 +25,7 @@ async function run() {
   try {
 
     const userColluction = client.db("Task-Management").collection("user");
+    const taskColluction = client.db("Task-Management").collection("task");
 
     app.post('/users',async(req,res)=>{
         const user = req.body;
@@ -33,8 +34,20 @@ async function run() {
     })
 
     app.get('/users',async(req,res)=>{
-        const result = await userColluction.find().limit(4).toArray()
+        const result = await userColluction.find().toArray()
         res.send(result)
+    })
+
+    app.post('/alltask',async(req,res)=>{
+      const task = req.body;
+      const result = await taskColluction.insertOne(task)
+      res.send(result)
+    })
+
+    app.get('/alltask',async(req,res)=>{
+      const email = req.query?.email
+      const result = await taskColluction.find({email:email}).toArray()
+      res.send(result)
     })
 
     await client.db("admin").command({ ping: 1 });
